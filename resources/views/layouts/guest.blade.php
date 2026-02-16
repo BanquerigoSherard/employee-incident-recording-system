@@ -20,7 +20,7 @@
                 <div class="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-center">
                     <div class="space-y-6">
                         <div class="flex items-center gap-3">
-                            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-900">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-900">
                                 <x-application-logo class="h-7 w-7 fill-current text-white" />
                             </div>
                             <div>
