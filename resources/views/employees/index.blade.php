@@ -271,6 +271,11 @@
                             <x-text-input id="edit_section" type="text" name="section" x-model="$store.employeeManager.currentEmployee.section" class="mt-1 block w-full" required />
                         </div>
                     </div>
+                    <div>
+                        <x-input-label for="edit_admin_password" value="Your password (required to update)" />
+                        <x-text-input id="edit_admin_password" name="admin_password" type="password" class="mt-1 block w-full" required />
+                        <x-input-error :messages="$errors->get('admin_password')" class="mt-2" />
+                    </div>
                     <div class="flex justify-end gap-3 border-t border-slate-200 pt-4">
                         <button type="button" @click="$store.employeeManager.closeEditModal()" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50" data-upload-cancel>Cancel</button>
                         <x-primary-button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800" data-upload-submit>
@@ -305,6 +310,11 @@
                 <form method="POST" :action="`{{ route('employees.destroy', '') }}/${$store.employeeManager.currentEmployee.id}`" class="border-t border-slate-200 px-6 py-4">
                     @csrf
                     @method('DELETE')
+                    <div class="mb-4">
+                        <x-input-label for="delete_admin_password" value="Your password (required to delete)" />
+                        <x-text-input id="delete_admin_password" name="admin_password" type="password" class="mt-1 block w-full" required />
+                        <x-input-error :messages="$errors->get('admin_password')" class="mt-2" />
+                    </div>
                     <div class="flex justify-end gap-3">
                         <button type="button" @click="$store.employeeManager.closeDeleteModal()" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50">Cancel</button>
                         <button type="submit" class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-700">Delete Employee</button>

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -118,6 +121,12 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
+        if (!$this->validateAdminPassword($request)) {
+            return back()->withInput()->withErrors([
+                'admin_password' => 'Invalid admin password.',
+            ]);
+        }
+
         $validated = $request->validate([
             'employee_no' => ['required', 'string', 'max:50', Rule::unique('employees', 'employee_no')->ignore($employee->id)],
             'first_name' => ['required', 'string', 'max:100'],
@@ -143,20 +152,59 @@ class EmployeeController extends Controller
             ]);
         }
 
+        Log::info('Employee updated.', [
+            'employee_id' => $employee->id,
+            'employee_no' => $employee->employee_no,
+            'updated_fields' => array_values(array_unique(array_merge(
+                array_keys($validated),
+                $photo ? ['photo'] : []
+            ))),
+            'has_photo' => (bool) $employee->photo_path,
+            'ip' => $request->ip(),
+        ]);
+
         return redirect()->route('employees.show', $employee)->with('status', 'Employee updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Employee $employee)
+    public function destroy(Request $request, Employee $employee)
     {
+        if (!$this->validateAdminPassword($request)) {
+            return back()->withInput()->withErrors([
+                'admin_password' => 'Invalid admin password.',
+            ]);
+        }
+
         if ($employee->photo_path) {
             Storage::disk('public')->delete($employee->photo_path);
         }
 
+        Log::info('Employee deleted.', [
+            'employee_id' => $employee->id,
+            'employee_no' => $employee->employee_no,
+            'has_photo' => (bool) $employee->photo_path,
+            'ip' => $request->ip(),
+        ]);
+
         $employee->delete();
 
         return redirect()->route('employees.index')->with('status', 'Employee deleted successfully.');
+    }
+
+    private function validateAdminPassword(Request $request): bool
+    {
+        $request->validate([
+            'admin_password' => ['required', 'string'],
+        ]);
+
+        $user = Auth::user();
+
+        if (!$user) {
+            return false;
+        }
+
+        return Hash::check($request->input('admin_password'), $user->password);
     }
 }

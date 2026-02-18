@@ -16,6 +16,12 @@
 
                     @include('employees.partials.form', ['employee' => $employee])
 
+                    <div>
+                        <x-input-label for="admin_password" value="Your password (required to update)" />
+                        <x-text-input id="admin_password" name="admin_password" type="password" class="mt-1 block w-full" required />
+                        <x-input-error :messages="$errors->get('admin_password')" class="mt-2" />
+                    </div>
+
                     <div class="flex items-center justify-end gap-3">
                         <a href="{{ route('employees.show', $employee) }}" class="text-sm font-medium text-slate-600 hover:text-slate-800">Cancel</a>
                         <x-primary-button>Save changes</x-primary-button>
