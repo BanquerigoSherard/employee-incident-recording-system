@@ -7,12 +7,14 @@
                 <p class="text-sm text-slate-500">{{ $employee->first_name }} {{ $employee->last_name }}</p>
             </div>
             <div class="flex items-center gap-3" x-data>
-                <a href="{{ route('employees.edit', $employee) }}" class="inline-flex items-center px-4 py-2 text-sm font-medium bg-white border rounded-md shadow-sm border-slate-300 text-slate-700 hover:bg-slate-50">Edit</a>
-                <button @click="$store.employeeShowManager.openDeleteModal({
-                    id: {{ $employee->id }},
-                    first_name: '{{ $employee->first_name }}',
-                    last_name: '{{ $employee->last_name }}'
-                })" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-md shadow-sm bg-rose-600 hover:bg-rose-500">Delete</button>
+                @if (auth()->user()->name === 'Allen Tamang')
+                    <a href="{{ route('employees.edit', $employee) }}" class="inline-flex items-center px-4 py-2 text-sm font-medium bg-white border rounded-md shadow-sm border-slate-300 text-slate-700 hover:bg-slate-50">Edit</a>
+                    <button @click="$store.employeeShowManager.openDeleteModal({
+                        id: {{ $employee->id }},
+                        first_name: '{{ $employee->first_name }}',
+                        last_name: '{{ $employee->last_name }}'
+                    })" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-md shadow-sm bg-rose-600 hover:bg-rose-500">Delete</button>
+                @endif
             </div>
         </div>
     </x-slot>

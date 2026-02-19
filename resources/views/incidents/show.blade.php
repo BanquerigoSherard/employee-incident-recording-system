@@ -8,7 +8,9 @@
             </div>
             <div class="flex items-center gap-3">
                 <a href="{{ route('incidents.index') }}" class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50">Back to reports</a>
-                <a href="{{ route('incidents.edit', $incident) }}" class="inline-flex items-center rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-800">Edit report</a>
+                @if (auth()->user()->name === 'Allen Tamang')
+                    <a href="{{ route('incidents.edit', $incident) }}" class="inline-flex items-center rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-800">Edit report</a>
+                @endif
             </div>
         </div>
     </x-slot>
@@ -80,22 +82,24 @@
                 </dl>
             </div>
 
-            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-                <h3 class="text-sm font-semibold text-slate-900">Delete report</h3>
-                <p class="mt-1 text-sm text-slate-500">Admin password is required to delete this incident report.</p>
-                <form method="POST" action="{{ route('incidents.destroy', $incident) }}" class="mt-4 space-y-4">
-                    @csrf
-                    @method('DELETE')
-                    <div>
-                        <x-input-label for="admin_password" value="Your password" />
-                        <x-text-input id="admin_password" name="admin_password" type="password" class="mt-1 block w-full" required />
-                        <x-input-error :messages="$errors->get('admin_password')" class="mt-2" />
-                    </div>
-                    <div class="flex justify-end">
-                        <button type="submit" class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-700">Delete report</button>
-                    </div>
-                </form>
-            </div>
+            @if (auth()->user()->name === 'Allen Tamang')
+                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                    <h3 class="text-sm font-semibold text-slate-900">Delete report</h3>
+                    <p class="mt-1 text-sm text-slate-500">Admin password is required to delete this incident report.</p>
+                    <form method="POST" action="{{ route('incidents.destroy', $incident) }}" class="mt-4 space-y-4">
+                        @csrf
+                        @method('DELETE')
+                        <div>
+                            <x-input-label for="admin_password" value="Your password" />
+                            <x-text-input id="admin_password" name="admin_password" type="password" class="mt-1 block w-full" required />
+                            <x-input-error :messages="$errors->get('admin_password')" class="mt-2" />
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-700">Delete report</button>
+                        </div>
+                    </form>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

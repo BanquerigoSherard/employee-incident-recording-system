@@ -96,21 +96,23 @@
                                     <td class="px-6 py-4 text-right text-sm">
                                         <div class="inline-flex items-center gap-3">
                                             <a href="{{ route('employees.show', $employee) }}" class="text-indigo-600 hover:text-indigo-500">View</a>
-                                            <button @click="$store.employeeManager.openEditModal({
-                                                id: {{ $employee->id }},
-                                                employee_no: '{{ $employee->employee_no }}',
-                                                first_name: '{{ $employee->first_name }}',
-                                                last_name: '{{ $employee->last_name }}',
-                                                department: '{{ $employee->department }}',
-                                                section: '{{ $employee->section }}',
-                                                status: '{{ $employee->status }}',
-                                                photo_url: '{{ $employee->photo_path ? asset('storage/' . $employee->photo_path) : '' }}'
-                                            })" class="text-slate-600 hover:text-slate-800">Edit</button>
-                                            <button @click="$store.employeeManager.openDeleteModal({
-                                                id: {{ $employee->id }},
-                                                first_name: '{{ $employee->first_name }}',
-                                                last_name: '{{ $employee->last_name }}'
-                                            })" class="text-rose-600 hover:text-rose-500">Delete</button>
+                                            @if (auth()->user()->name === 'Allen Tamang')
+                                                <button @click="$store.employeeManager.openEditModal({
+                                                    id: {{ $employee->id }},
+                                                    employee_no: '{{ $employee->employee_no }}',
+                                                    first_name: '{{ $employee->first_name }}',
+                                                    last_name: '{{ $employee->last_name }}',
+                                                    department: '{{ $employee->department }}',
+                                                    section: '{{ $employee->section }}',
+                                                    status: '{{ $employee->status }}',
+                                                    photo_url: '{{ $employee->photo_path ? asset('storage/' . $employee->photo_path) : '' }}'
+                                                })" class="text-slate-600 hover:text-slate-800">Edit</button>
+                                                <button @click="$store.employeeManager.openDeleteModal({
+                                                    id: {{ $employee->id }},
+                                                    first_name: '{{ $employee->first_name }}',
+                                                    last_name: '{{ $employee->last_name }}'
+                                                })" class="text-rose-600 hover:text-rose-500">Delete</button>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

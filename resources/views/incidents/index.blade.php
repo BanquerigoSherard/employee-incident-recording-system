@@ -84,18 +84,20 @@
                                     <td class="px-6 py-4 text-right text-sm">
                                         <div class="inline-flex items-center gap-3">
                                             <a href="{{ route('incidents.show', $incident) }}" class="text-indigo-600 hover:text-indigo-500">View</a>
-                                            <button @click="$store.incidentManager.openEditModal({
-                                                id: {{ $incident->id }},
-                                                employee_id: {{ $incident->employee_id }},
-                                                incident_date: '{{ $incident->incident_date->format('Y-m-d') }}',
-                                                description: @js($incident->description),
-                                                attachment_url: '{{ $incident->attachment_path ? asset('storage/' . $incident->attachment_path) : '' }}'
-                                            })" class="text-slate-600 hover:text-slate-800">Edit</button>
-                                            <button @click="$store.incidentManager.openDeleteModal({
-                                                id: {{ $incident->id }},
-                                                incident_summary: @js(\Illuminate\Support\Str::limit($incident->description, 60)),
-                                                employee_name: '{{ $incident->employee?->first_name }} {{ $incident->employee?->last_name }}'
-                                            })" class="text-rose-600 hover:text-rose-500">Delete</button>
+                                            @if (auth()->user()->name === 'Allen Tamang')
+                                                <button @click="$store.incidentManager.openEditModal({
+                                                    id: {{ $incident->id }},
+                                                    employee_id: {{ $incident->employee_id }},
+                                                    incident_date: '{{ $incident->incident_date->format('Y-m-d') }}',
+                                                    description: @js($incident->description),
+                                                    attachment_url: '{{ $incident->attachment_path ? asset('storage/' . $incident->attachment_path) : '' }}'
+                                                })" class="text-slate-600 hover:text-slate-800">Edit</button>
+                                                <button @click="$store.incidentManager.openDeleteModal({
+                                                    id: {{ $incident->id }},
+                                                    incident_summary: @js(\Illuminate\Support\Str::limit($incident->description, 60)),
+                                                    employee_name: '{{ $incident->employee?->first_name }} {{ $incident->employee?->last_name }}'
+                                                })" class="text-rose-600 hover:text-rose-500">Delete</button>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

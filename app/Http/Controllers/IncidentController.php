@@ -154,6 +154,10 @@ class IncidentController extends Controller
 
     public function edit(Incident $incident)
     {
+        if (!$this->isAuthorizedUser()) {
+            return redirect()->route('incidents.show', $incident)->with('error', 'You do not have permission to edit incidents.');
+        }
+
         $employees = Employee::query()
             ->orderBy('last_name')
             ->orderBy('first_name')
@@ -164,6 +168,10 @@ class IncidentController extends Controller
 
     public function update(Request $request, Incident $incident)
     {
+        if (!$this->isAuthorizedUser()) {
+            return back()->with('error', 'You do not have permission to edit incidents.');
+        }
+
         if (!$this->validateAdminPassword($request)) {
             return back()->withInput()->withErrors([
                 'admin_password' => 'Invalid admin password.',
@@ -212,6 +220,10 @@ class IncidentController extends Controller
 
     public function destroy(Request $request, Incident $incident)
     {
+        if (!$this->isAuthorizedUser()) {
+            return back()->with('error', 'You do not have permission to delete incidents.');
+        }
+
         if (!$this->validateAdminPassword($request)) {
             return back()->withInput()->withErrors([
                 'admin_password' => 'Invalid admin password.',
@@ -295,5 +307,11 @@ class IncidentController extends Controller
         }
 
         return Hash::check($request->input('admin_password'), $user->password);
+    }
+
+    private function isAuthorizedUser(): bool
+    {
+        $user = Auth::user();
+        return $user && $user->name === 'Allen Tamang';
     }
 }

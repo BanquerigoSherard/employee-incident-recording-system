@@ -113,6 +113,10 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
+        if (!$this->isAuthorizedUser()) {
+            return redirect()->route('employees.show', $employee)->with('error', 'You do not have permission to edit employees.');
+        }
+
         return view('employees.edit', compact('employee'));
     }
 
@@ -121,6 +125,10 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
+        if (!$this->isAuthorizedUser()) {
+            return back()->with('error', 'You do not have permission to edit employees.');
+        }
+
         if (!$this->validateAdminPassword($request)) {
             return back()->withInput()->withErrors([
                 'admin_password' => 'Invalid admin password.',
@@ -171,6 +179,10 @@ class EmployeeController extends Controller
      */
     public function destroy(Request $request, Employee $employee)
     {
+        if (!$this->isAuthorizedUser()) {
+            return back()->with('error', 'You do not have permission to delete employees.');
+        }
+
         if (!$this->validateAdminPassword($request)) {
             return back()->withInput()->withErrors([
                 'admin_password' => 'Invalid admin password.',
@@ -206,5 +218,11 @@ class EmployeeController extends Controller
         }
 
         return Hash::check($request->input('admin_password'), $user->password);
+    }
+
+    private function isAuthorizedUser(): bool
+    {
+        $user = Auth::user();
+        return $user && $user->name === 'Allen Tamang';
     }
 }
