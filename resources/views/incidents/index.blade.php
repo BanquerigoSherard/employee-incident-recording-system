@@ -84,7 +84,7 @@
                                     <td class="px-6 py-4 text-right text-sm">
                                         <div class="inline-flex items-center gap-3">
                                             <a href="{{ route('incidents.show', $incident) }}" class="text-indigo-600 hover:text-indigo-500">View</a>
-                                            @if (auth()->user()->name === 'Allen Tamang')
+                                            @if (auth()->user()->id === 1)
                                                 <button @click="$store.incidentManager.openEditModal({
                                                     id: {{ $incident->id }},
                                                     employee_id: {{ $incident->employee_id }},

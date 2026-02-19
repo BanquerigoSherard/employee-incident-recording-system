@@ -7,7 +7,7 @@
                 <p class="text-sm text-slate-500">{{ $employee->first_name }} {{ $employee->last_name }}</p>
             </div>
             <div class="flex items-center gap-3" x-data>
-                @if (auth()->user()->name === 'Allen Tamang')
+                @if (auth()->user()->id === 1)
                     <a href="{{ route('employees.edit', $employee) }}" class="inline-flex items-center px-4 py-2 text-sm font-medium bg-white border rounded-md shadow-sm border-slate-300 text-slate-700 hover:bg-slate-50">Edit</a>
                     <button @click="$store.employeeShowManager.openDeleteModal({
                         id: {{ $employee->id }},

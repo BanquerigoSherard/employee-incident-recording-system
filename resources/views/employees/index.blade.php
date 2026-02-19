@@ -96,7 +96,7 @@
                                     <td class="px-6 py-4 text-right text-sm">
                                         <div class="inline-flex items-center gap-3">
                                             <a href="{{ route('employees.show', $employee) }}" class="text-indigo-600 hover:text-indigo-500">View</a>
-                                            @if (auth()->user()->name === 'Allen Tamang')
+                                            @if (auth()->user()->id === 1)
                                                 <button @click="$store.employeeManager.openEditModal({
                                                     id: {{ $employee->id }},
                                                     employee_no: '{{ $employee->employee_no }}',

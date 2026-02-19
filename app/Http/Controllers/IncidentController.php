@@ -312,6 +312,6 @@ class IncidentController extends Controller
     private function isAuthorizedUser(): bool
     {
         $user = Auth::user();
-        return $user && $user->name === 'Allen Tamang';
+        return $user && $user->id === 1;
     }
 }
