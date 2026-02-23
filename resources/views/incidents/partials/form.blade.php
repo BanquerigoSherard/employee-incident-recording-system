@@ -7,14 +7,39 @@
     <div class="grid gap-5 md:grid-cols-2">
         <div>
             <x-input-label for="employee_id" value="Selected employee" />
-            <select id="employee_id" name="employee_id" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-slate-500 focus:ring-slate-500" required>
-                <option value="">Select employee</option>
-                @foreach ($employees as $employee)
-                    <option value="{{ $employee->id }}" @selected(($useOld ? old('employee_id', $incident?->employee_id) : $incident?->employee_id) == $employee->id)>
-                        {{ $employee->first_name }} {{ $employee->last_name }} ({{ $employee->employee_no }})
-                    </option>
-                @endforeach
-            </select>
+            <div x-data="searchableEmployeeSelect({{ json_encode($employees->map(fn($e) => ['id' => $e->id, 'name' => $e->first_name . ' ' . $e->last_name, 'employee_no' => $e->employee_no])->values()->toArray()) }}, '{{ $useOld ? old('employee_id', $incident?->employee_id) : $incident?->employee_id }}')" class="relative mt-1">
+                <input 
+                    type="text"
+                    x-model="searchQuery"
+                    @input="filterEmployees()"
+                    @focus="showDropdown = true"
+                    @click="showDropdown = true"
+                    placeholder="Search or select employee"
+                    class="block w-full rounded-md border-slate-300 shadow-sm focus:border-slate-500 focus:ring-slate-500"
+                />
+                <input type="hidden" id="employee_id" name="employee_id" :value="selectedEmployeeId" />
+                
+                <div 
+                    x-show="showDropdown"
+                    @click.outside="showDropdown = false"
+                    class="absolute top-full left-0 right-0 z-10 mt-1 max-h-60 overflow-y-auto rounded-md border border-slate-300 bg-white shadow-lg">
+                    <template x-if="filteredEmployees.length === 0">
+                        <div class="px-4 py-3 text-sm text-slate-500">No employees found</div>
+                    </template>
+                    <template x-if="filteredEmployees.length > 0">
+                        <template x-for="employee in filteredEmployees" :key="employee.id">
+                            <button
+                                type="button"
+                                @click="selectEmployee(employee); showDropdown = false"
+                                :class="selectedEmployeeId === employee.id ? 'bg-slate-100' : 'hover:bg-slate-50'"
+                                class="w-full px-4 py-3 text-left text-sm transition">
+                                <span class="font-medium text-slate-900" x-text="employee.name"></span>
+                                <span class="text-slate-500" x-text="'(' + employee.employee_no + ')'"></span>
+                            </button>
+                        </template>
+                    </template>
+                </div>
+            </div>
             <x-input-error :messages="$errors->get('employee_id')" class="mt-2" />
         </div>
 
@@ -53,3 +78,34 @@
         <x-input-error :messages="$errors->get('attachment')" class="mt-2" />
     </div>
 </div>
+
+<script>
+    function searchableEmployeeSelect(employees, initialId) {
+        return {
+            employees: employees,
+            filteredEmployees: employees,
+            searchQuery: '',
+            showDropdown: false,
+            selectedEmployeeId: initialId ? parseInt(initialId) : null,
+            
+            filterEmployees() {
+                const query = this.searchQuery.toLowerCase().trim();
+                
+                if (!query) {
+                    this.filteredEmployees = this.employees;
+                } else {
+                    this.filteredEmployees = this.employees.filter(emp => 
+                        emp.name.toLowerCase().includes(query) || 
+                        emp.employee_no.toLowerCase().includes(query)
+                    );
+                }
+            },
+            
+            selectEmployee(employee) {
+                this.selectedEmployeeId = employee.id;
+                this.searchQuery = employee.name + ' (' + employee.employee_no + ')';
+                this.showDropdown = false;
+            }
+        };
+    }
+</script>
